@@ -26,14 +26,16 @@ export interface PulseDetail extends PulseListItem {
   posts: Array<Record<string, unknown>>;
 }
 
+export interface PulsePagination {
+  page: number;
+  pageSize: number;
+  total: number;
+}
+
 export interface PulseListResponse {
   success: boolean;
   data: PulseListItem[];
-  pagination: {
-    page: number;
-    pageSize: number;
-    total: number;
-  };
+  pagination: PulsePagination;
 }
 
 export interface PulseCategoriesResponse {

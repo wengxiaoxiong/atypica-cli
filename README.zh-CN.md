@@ -14,6 +14,20 @@ atypica pulse list --limit 5
 atypica pulse get 193 --json
 ```
 
+## Pulse 列表增强
+
+默认 `atypica pulse list` 会显示更多字段：日期、摘要、来源链接、分页信息。
+
+```bash
+atypica pulse list --limit 10 --page 2
+```
+
+如果你在自动化场景更关注速度，可关闭来源链接补充：
+
+```bash
+atypica pulse list --limit 20 --no-source-enrich
+```
+
 ## 推荐阅读
 
 - 英文主 README: [README.md](./README.md)

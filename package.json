@@ -16,8 +16,9 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "npm run build && node dist/cli.js",
-    "test": "node --test dist/tests/**/*.test.js",
-    "test:src": "node --test --experimental-strip-types src/tests/**/*.test.ts",
+    "install:local": "/bin/zsh -lc 'mkdir -p \"$HOME/.npm-global\" && npm run build && npm install -g --prefix \"$HOME/.npm-global\" . && if ! grep -Fq \"export PATH=\\\"$HOME/.npm-global/bin:$PATH\\\"\" \"$HOME/.zshrc\" 2>/dev/null; then printf \"\\nexport PATH=\\\"$HOME/.npm-global/bin:$PATH\\\"\\n\" >> \"$HOME/.zshrc\"; fi'",
+    "test": "node --test dist/tests/*.test.js",
+    "test:src": "npm run build && npm run test",
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {

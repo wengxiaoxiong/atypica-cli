@@ -60,6 +60,12 @@ List pulses:
 atypica pulse list --limit 5 --locale en-US
 ```
 
+Skip source enrichment lookups for faster list output:
+
+```bash
+atypica pulse list --limit 20 --page 2 --no-source-enrich
+```
+
 Filter by category:
 
 ```bash
@@ -153,11 +159,14 @@ Environment variables override the saved local config at runtime.
 
 ```bash
 $ atypica pulse list --limit 3 --locale en-US
-ID   Category     Locale  Heat                Delta  Title
----- ------------ ------- ------------------- -----  ----------------------------------------------
-2918 Global News  en-US   453.2020651074475   -      US Pilot Rescue Uranium Claim
-2940 AI Business  en-US   262.90438014565154  -      OpenAI Codex plugin for Claude
-3396 AI Tech      en-US   323.6711869385739   -      bitnet.cpp: Microsoft 1-bit AI inference
+ID    Category     Locale  Date        Heat    Delta   Source                          Title                              Summary
+----  -----------  ------  ----------  ------  ------  ------------------------------  ---------------------------------  ---------------------------------
+2918  Global News  en-US   2026-04-12  453.20  +7.40   https://x.com/.../status/123   US Pilot Rescue Uranium Claim      Rescue claim triggers new debate…
+2940  AI Business  en-US   2026-04-12  262.90  -       https://twitter.com/.../456    OpenAI Codex plugin for Claude     New plugin connects Claude tools…
+3396  AI Tech      en-US   2026-04-12  323.67  +4.08   -                               bitnet.cpp: Microsoft 1-bit AI…    1-bit inference benchmark update…
+
+Page 1/28  ·  Total 278  ·  PageSize 3  ·  Prev no  ·  Next yes
+Tip: atypica pulse list --page 2 --limit 3
 ```
 
 ```bash

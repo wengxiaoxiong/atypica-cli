@@ -1,28 +1,124 @@
-import { PulseDetail, PulseListItem } from "../types.js";
-import { formatValue, printInfo, printJson, printTable } from "./output.js";
+import { PulseDetail, PulseListItem, PulseListResponse } from "../types.js";
+import {
+  formatValue,
+  highlightCategory,
+  highlightDate,
+  highlightDelta,
+  highlightHeat,
+  highlightLink,
+  highlightMuted,
+  highlightTitle,
+  printInfo,
+  printJson,
+  printTable,
+} from "./output.js";
 
-export function renderPulseList(items: PulseListItem[], json: boolean): void {
-  if (json) {
-    printJson(items);
+const SUMMARY_LIMIT = 96;
+
+export interface RenderPulseListOptions {
+  json: boolean;
+  sourceUrlsById?: Map<number, string | null>;
+}
+
+function truncateText(value: string, maxLength: number): string {
+  if (value.length <= maxLength) return value;
+  return `${value.slice(0, maxLength - 1).trimEnd()}…`;
+}
+
+function formatDate(isoDate: string): string {
+  const date = new Date(isoDate);
+  if (Number.isNaN(date.getTime())) return isoDate;
+  return date.toISOString().slice(0, 10);
+}
+
+function formatHeat(value: number | null): string {
+  if (value === null) return "-";
+  return value.toFixed(2);
+}
+
+function formatDelta(value: number | null): { text: string; positive: boolean | null } {
+  if (value === null) return { text: "-", positive: null };
+  const positive = value >= 0;
+  const sign = positive ? "+" : "";
+  return { text: `${sign}${value.toFixed(2)}`, positive };
+}
+
+function normalizeUrl(url: string): string {
+  return url.replace(/\/$/, "");
+}
+
+function sortByShorterLength(urls: string[]): string[] {
+  return [...urls].sort((left, right) => left.length - right.length);
+}
+
+export function extractTwitterSourceUrls(posts: Array<Record<string, unknown>>): string[] {
+  const urlRegex = /https?:\/\/(?:x|twitter)\.com\/[^\s"')\]}]+/gi;
+  const discovered = new Set<string>();
+
+  for (const post of posts) {
+    const payload = JSON.stringify(post);
+    const matches = payload.match(urlRegex);
+    if (!matches) continue;
+    for (const rawUrl of matches) {
+      discovered.add(normalizeUrl(rawUrl));
+    }
+  }
+
+  return sortByShorterLength([...discovered]);
+}
+
+function formatSourceValue(itemId: number, sourceUrlsById?: Map<number, string | null>): string {
+  if (!sourceUrlsById) return "-";
+  const source = sourceUrlsById.get(itemId) ?? null;
+  if (!source) return "-";
+  return source.length > 42 ? `${source.slice(0, 39)}…` : source;
+}
+
+export function renderPulseList(response: PulseListResponse, options: RenderPulseListOptions): void {
+  if (options.json) {
+    printJson(response);
     return;
   }
 
+  const items = response.data;
   if (items.length === 0) {
     printInfo("No pulses found.");
     return;
   }
 
   printTable(
-    ["ID", "Category", "Locale", "Heat", "Delta", "Title"],
-    items.map((item) => [
-      String(item.id),
-      item.category,
-      item.locale,
-      formatValue(item.heatScore),
-      formatValue(item.heatDelta),
-      item.title,
-    ]),
+    ["ID", "Category", "Locale", "Date", "Heat", "Delta", "Source", "Title", "Summary"],
+    items.map((item) => {
+      const delta = formatDelta(item.heatDelta);
+      return [
+        String(item.id),
+        highlightCategory(item.category),
+        item.locale,
+        highlightDate(formatDate(item.createdAt)),
+        highlightHeat(formatHeat(item.heatScore)),
+        highlightDelta(delta.text, delta.positive),
+        highlightLink(formatSourceValue(item.id, options.sourceUrlsById)),
+        highlightTitle(truncateText(item.title, 52)),
+        truncateText(item.content.replace(/\s+/g, " ").trim(), SUMMARY_LIMIT),
+      ];
+    }),
   );
+
+  const totalPages = Math.max(1, Math.ceil(response.pagination.total / response.pagination.pageSize));
+  const hasPrev = response.pagination.page > 1;
+  const hasNext = response.pagination.page < totalPages;
+  const paginationSummary = [
+    `Page ${response.pagination.page}/${totalPages}`,
+    `Total ${response.pagination.total}`,
+    `PageSize ${response.pagination.pageSize}`,
+    `Prev ${hasPrev ? "yes" : "no"}`,
+    `Next ${hasNext ? "yes" : "no"}`,
+  ].join("  ·  ");
+  printInfo("");
+  printInfo(highlightMuted(paginationSummary));
+  if (hasNext) {
+    printInfo(highlightMuted(`Tip: atypica pulse list --page ${response.pagination.page + 1} --limit ${response.pagination.pageSize}`));
+  }
 }
 
 export function renderPulseCategories(items: string[], json: boolean): void {
@@ -48,14 +144,25 @@ export function renderPulseDetail(item: PulseDetail, json: boolean): void {
   }
 
   printInfo(`ID: ${item.id}`);
-  printInfo(`Title: ${item.title}`);
-  printInfo(`Category: ${item.category}`);
+  printInfo(`Title: ${highlightTitle(item.title)}`);
+  printInfo(`Category: ${highlightCategory(item.category)}`);
   printInfo(`Locale: ${item.locale}`);
-  printInfo(`Heat Score: ${formatValue(item.heatScore)}`);
-  printInfo(`Heat Delta: ${formatValue(item.heatDelta)}`);
-  printInfo(`Created At: ${item.createdAt}`);
+  printInfo(`Heat Score: ${highlightHeat(formatValue(item.heatScore))}`);
+  const delta = formatDelta(item.heatDelta);
+  printInfo(`Heat Delta: ${highlightDelta(delta.text, delta.positive)}`);
+  printInfo(`Created At: ${highlightDate(item.createdAt)}`);
   printInfo("");
-  printInfo(item.content);
+  printInfo("Content:");
+  printInfo(item.content.trim());
+
+  const sourceUrls = extractTwitterSourceUrls(item.posts);
+  if (sourceUrls.length > 0) {
+    printInfo("");
+    printInfo(`Source URLs (${sourceUrls.length}):`);
+    sourceUrls.forEach((url, index) => {
+      printInfo(`${index + 1}. ${highlightLink(url)}`);
+    });
+  }
 
   if (item.posts.length > 0) {
     printInfo("");
