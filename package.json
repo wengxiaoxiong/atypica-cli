@@ -1,0 +1,27 @@
+{
+  "name": "@atypica/cli",
+  "version": "0.1.0",
+  "description": "CLI for atypica Pulse APIs",
+  "type": "module",
+  "bin": {
+    "atypica": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "npm run build && node dist/cli.js",
+    "test": "node --test dist/tests/**/*.test.js",
+    "test:src": "node --test --experimental-strip-types src/tests/**/*.test.ts",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.1",
+    "typescript": "^5.9.3"
+  }
+}
