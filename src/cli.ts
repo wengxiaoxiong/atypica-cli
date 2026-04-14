@@ -8,7 +8,15 @@ import { runSelfUpdateCommand } from "./commands/self-update.js";
 import { resolveConfig } from "./lib/config.js";
 import { CliError } from "./lib/errors.js";
 import { maybeNotifyForUpdates } from "./lib/update.js";
-import { printError, printInfo } from "./lib/output.js";
+import {
+  highlightCategory,
+  highlightHeat,
+  highlightLink,
+  highlightMuted,
+  highlightTitle,
+  printError,
+  printInfo,
+} from "./lib/output.js";
 import { CliContext } from "./types.js";
 
 async function readVersion(): Promise<string> {
@@ -44,30 +52,42 @@ function extractGlobalFlags(argv: string[]): { context: CliContext; args: string
 }
 
 function printHelp(): void {
-  printInfo("atypica CLI");
+  const cmd = (text: string) => highlightTitle(text);
+  const section = (text: string) => highlightCategory(text);
+  const tip = (text: string) => highlightMuted(text);
+  const value = (text: string) => highlightHeat(text);
+  const link = (text: string) => highlightLink(text);
+
+  printInfo(highlightTitle("atypica CLI"));
   printInfo("");
-  printInfo("Usage:");
-  printInfo("  atypica <command> <subcommand> [options]");
+  printInfo(section("Usage:"));
+  printInfo(`  ${cmd("atypica")} <command> <subcommand> [options]`);
   printInfo("");
-  printInfo("Core commands:");
-  printInfo("  auth         Configure and inspect Personal API Key access");
-  printInfo("  pulse        Query Pulse categories, lists, and details");
-  printInfo("  self-update  Print or run the recommended upgrade command");
-  printInfo("  help         Show global or command-specific help");
+  printInfo(section("Core commands:"));
+  printInfo(`  ${cmd("auth")}         Configure and inspect Personal API Key access`);
+  printInfo(`  ${cmd("pulse")}        Query Pulse categories, lists, and details`);
+  printInfo(`  ${cmd("self-update")}  Print or run the recommended upgrade command`);
+  printInfo(`  ${cmd("help")}         Show global or command-specific help`);
   printInfo("");
-  printInfo("Global flags:");
-  printInfo("  --json             Output machine-readable JSON when supported");
-  printInfo("  --no-update-check  Disable the background version check for this run");
+  printInfo(section("Global flags:"));
+  printInfo(`  ${value("--json")}             Output machine-readable JSON when supported`);
+  printInfo(`  ${value("--no-update-check")}  Disable the background version check for this run`);
   printInfo("");
-  printInfo("Examples:");
-  printInfo("  atypica auth login");
-  printInfo("  atypica pulse list --limit 5 --locale en-US");
-  printInfo("  atypica pulse get 3396 --json --no-update-check");
+  printInfo(section("Examples:"));
+  printInfo(`  ${cmd("atypica auth login")}`);
+  printInfo(`  ${cmd("atypica pulse list --limit 5 --locale en-US")}`);
+  printInfo(`  ${cmd("atypica pulse get 3396 --json --no-update-check")}`);
   printInfo("");
-  printInfo("Agent tips:");
-  printInfo("  - Use `--json` for downstream parsing");
-  printInfo("  - Prefer env-based auth in automation: `ATYPICA_API_KEY=... atypica pulse list --json`");
-  printInfo("  - Run `atypica pulse help` or `atypica auth help` for detailed command help");
+  printInfo(section("What atypica gives you:"));
+  printInfo(`  - ${tip("Pulse trend signals and global news coverage in one feed")}`);
+  printInfo(`  - ${tip("AI-generated summaries for each pulse to speed up understanding")}`);
+  printInfo(`  - ${tip("Traceable source posts, including original X / Twitter links")}`);
+  printInfo("");
+  printInfo(section("Agent tips:"));
+  printInfo(`  - ${tip(`Use ${value("--json")} for downstream parsing`)}`);
+  printInfo(`  - ${tip(`Prefer env-based auth in automation: ${cmd("ATYPICA_API_KEY=... atypica pulse list --json")}`)}`);
+  printInfo(`  - ${tip(`Run ${cmd("atypica pulse help")} or ${cmd("atypica auth help")} for detailed command help`)}`);
+  printInfo(`  - ${tip(`Docs: ${link("https://atypica.ai/docs/pulse")} · ${link("https://atypica.ai/docs")}`)}`);
 }
 
 async function main(): Promise<void> {
