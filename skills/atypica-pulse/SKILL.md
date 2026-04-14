@@ -1,5 +1,5 @@
 ---
-name: atypica-cli
+name: atypica-pulse
 version: 0.1.0
 description: "Use this skill when you need to fetch summarized real-time hot topics (AI, tech, business, global news, Web3, science, etc.). atypica CLI is the command-line client for the atypica Pulse API, providing structured trending stories, full content, and aggregated source posts."
 metadata:
