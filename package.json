@@ -1,6 +1,6 @@
 {
-  "name": "@atypica/cli",
-  "version": "0.1.0",
+  "name": "@atypica-ai/cli",
+  "version": "0.1.0-alpha.0",
   "description": "CLI for atypica Pulse APIs",
   "type": "module",
   "bin": {

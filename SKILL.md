@@ -15,7 +15,7 @@ metadata:
 ## Installation
 
 ```bash
-npm install -g @atypica/cli
+npm install -g @atypica-ai/cli
 ```
 
 Verify the installation:

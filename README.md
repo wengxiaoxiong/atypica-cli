@@ -4,7 +4,9 @@
 
 **Use the terminal to see what the world is talking about.**
 
-[atypica](https://atypica.ai) is the official command-line client for the **Pulse** API. Pulse is atypica’s trend-discovery system: it tracks how attention moves across the web so you can spot signals worth following—before they fade.
+[atypica.ai](https://atypica.ai) is an AI agent for business research.  
+This CLI is the official command-line client for the **Pulse** API, and Pulse is only the first step in the broader atypica product roadmap.  
+Pulse tracks how attention moves across the web so you can spot signals worth following before they fade.
 
 **Who it’s for**
 
@@ -19,13 +21,13 @@ Simplified Chinese: [README.zh-CN.md](./README.zh-CN.md)
 ## Install
 
 ```bash
-npm install -g @atypica/cli
+npm install -g @atypica-ai/cli
 ```
 
 Or with pnpm:
 
 ```bash
-pnpm add -g @atypica/cli
+pnpm add -g @atypica-ai/cli
 ```
 
 Requires **Node.js 20+**.

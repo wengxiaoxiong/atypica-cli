@@ -4,8 +4,9 @@
 
 > 用命令行捕捉「世界正在讨论什么」。
 
-`atypica` 是 [atypica.ai](https://atypica.ai) **Pulse API** 的官方命令行客户端。  
-**Pulse** 是 atypica 的热点发现系统：持续追踪全网内容的热度变化，帮你更快看到值得跟进的趋势信号。
+[atypica.ai](https://atypica.ai) 是一个做商业研究的 AI 智能体。  
+`atypica` CLI 是其 **Pulse API** 的官方命令行客户端，而 **Pulse** 只是整个产品能力的第一步。  
+Pulse 会持续追踪全网内容的热度变化，帮你更快看到值得跟进的趋势信号。
 
 **适合谁用**
 
@@ -20,13 +21,13 @@
 ## 安装
 
 ```bash
-npm install -g @atypica/cli
+npm install -g @atypica-ai/cli
 ```
 
 或使用 pnpm：
 
 ```bash
-pnpm add -g @atypica/cli
+pnpm add -g @atypica-ai/cli
 ```
 
 需要 **Node.js 20+**。
