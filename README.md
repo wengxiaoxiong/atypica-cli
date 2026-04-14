@@ -1,3 +1,4 @@
+
 ![head-image](./head-image.webp)
 
 # Atypica CLI
@@ -14,9 +15,20 @@ Pulse tracks how attention moves across the web so you can spot signals worth fo
 - **Researchers** — follow domains like AI, global news, or business  
 - **Developers & agents** — pipe trend data into scripts and automation  
 
-Simplified Chinese: [README.zh-CN.md](./README.zh-CN.md)
+简体中文: [README.zh-CN.md](./README.zh-CN.md)
 
 ---
+
+## Available skill
+
+For better results, use this CLI together with the `atypica-pulse` skill:
+
+```bash
+npx skills add https://github.com/atypica-ai/atypica-cli --skill atypica-pulse
+```
+
+---
+
 
 ## Install
 
@@ -224,8 +236,3 @@ node dist/cli.js help
 - Pulse: `https://atypica.ai/docs/pulse`  
 - Developer hub: `https://atypica.ai/docs`
 
----
-
-## Agent skill
-
-This repo includes [`SKILL.md`](./SKILL.md) for agents that need to call atypica APIs—point your agent tooling at that file for prompts and conventions.
