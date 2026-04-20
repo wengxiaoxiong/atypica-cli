@@ -98,6 +98,12 @@ Filter by category and sort:
 atypica pulse list --category "AI Tech" --order-by heatScore
 ```
 
+Surface sudden breakout topics:
+
+```bash
+atypica pulse list --order-by heatDelta --limit 10
+```
+
 List categories:
 
 ```bash
@@ -108,6 +114,12 @@ Fetch one pulse:
 
 ```bash
 atypica pulse get 193
+```
+
+Fetch one pulse with machine-readable heat history:
+
+```bash
+atypica pulse get 193 --json
 ```
 
 Machine-readable output:
@@ -141,6 +153,7 @@ atypica pulse list --limit 10 --json --no-update-check
 ```
 
 - Set explicit **`--limit`**, **`--locale`**, and **`--order-by`** when you need repeatable results  
+- Use **`--order-by heatDelta`** when you want breakout topics ranked by delta instead of total heat score  
 - **Non-zero exit code** means failure (including missing or invalid auth)
 
 ---
@@ -212,6 +225,16 @@ $ atypica pulse get 3396 --json
   "heatScore": 323.6711869385739,
   "heatDelta": null,
   "createdAt": "2026-04-10T14:00:39.241Z",
+  "history": [
+    {
+      "date": "2026-04-09",
+      "heatScore": 280.1
+    },
+    {
+      "date": "2026-04-10",
+      "heatScore": 323.6711869385739
+    }
+  ],
   "posts": []
 }
 ```
@@ -235,4 +258,3 @@ node dist/cli.js help
 
 - Pulse: `https://atypica.ai/docs/pulse`  
 - Developer hub: `https://atypica.ai/docs`
-
