@@ -84,10 +84,10 @@ atypica pulse list --limit 5
 atypica pulse list --limit 5 --locale en-US
 ```
 
-更快列出（关闭来源补充查询）：
+在列表里显示来源链接（较慢，会额外查询详情）：
 
 ```bash
-atypica pulse list --limit 20 --page 2 --no-source-enrich
+atypica pulse list --limit 20 --page 2 --source-enrich
 ```
 
 按分类筛选、排序：
@@ -201,11 +201,11 @@ https://atypica.ai/api
 
 ```bash
 $ atypica pulse list --limit 3 --locale en-US
-ID    Category     Locale  Date        Heat    Delta   Source                          Title                              Summary
-----  -----------  ------  ----------  ------  ------  ------------------------------  ---------------------------------  ---------------------------------
-2918  Global News  en-US   2026-04-12  453.20  +7.40   https://x.com/.../status/123   US Pilot Rescue Uranium Claim      Rescue claim triggers new debate…
-2940  AI Business  en-US   2026-04-12  262.90  -       https://twitter.com/.../456    OpenAI Codex plugin for Claude     New plugin connects Claude tools…
-3396  AI Tech      en-US   2026-04-12  323.67  +4.08   -                               bitnet.cpp: Microsoft 1-bit AI…    1-bit inference benchmark update…
+ID    Category     Locale  Date        Heat    Delta   Title                              Summary
+----  -----------  ------  ----------  ------  ------  ---------------------------------  ---------------------------------
+2918  Global News  en-US   2026-04-12  453.20  +7.40   US Pilot Rescue Uranium Claim      Rescue claim triggers new debate…
+2940  AI Business  en-US   2026-04-12  262.90  -       OpenAI Codex plugin for Claude     New plugin connects Claude tools…
+3396  AI Tech      en-US   2026-04-12  323.67  +4.08   bitnet.cpp: Microsoft 1-bit AI…    1-bit inference benchmark update…
 
 Page 1/28  ·  Total 278  ·  PageSize 3  ·  Prev no  ·  Next yes
 Tip: atypica pulse list --page 2 --limit 3

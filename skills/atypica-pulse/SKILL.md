@@ -71,8 +71,8 @@ atypica pulse list --category "AI Tech" --locale en-US --limit 20 --page 2
 # Sort by heat score in JSON mode
 atypica pulse list --order-by heatScore --limit 5 --json
 
-# Faster list (skip source enrichment)
-atypica pulse list --limit 20 --no-source-enrich
+# Include source links in list output (slower; performs extra detail lookups)
+atypica pulse list --limit 20 --source-enrich
 ```
 
 Key options:
@@ -81,7 +81,7 @@ Key options:
 - `--limit <n>` — page size (1–50)
 - `--page <n>` — page number (≥1)
 - `--order-by <heatScore|heatDelta|createdAt>` — sort field (descending)
-- `--no-source-enrich` — skip extra detail fetch for source links (faster)
+- `--source-enrich` — add source link column by fetching each pulse detail (slower)
 - `--json` — machine-readable JSON output
 
 ### 2. Get one pulse
@@ -137,7 +137,7 @@ atypica pulse list --category "Science" --limit 50 --json
 
 Fast dashboard feed:
 ```bash
-atypica pulse list --limit 30 --no-source-enrich --json
+atypica pulse list --limit 30 --json
 ```
 
 Browse categories first:

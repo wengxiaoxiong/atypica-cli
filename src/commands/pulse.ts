@@ -83,12 +83,12 @@ export function printPulseHelp(): void {
   const link = (text: string) => highlightLink(text);
 
   printInfo(section("Usage:"));
-  printInfo(`  ${cmd("atypica pulse list")} [--category <name>] [--locale <en-US>] [--limit <n>] [--page <n>] [--order-by <heatScore|heatDelta|createdAt>] [--no-source-enrich]`);
+  printInfo(`  ${cmd("atypica pulse list")} [--category <name>] [--locale <en-US>] [--limit <n>] [--page <n>] [--order-by <heatScore|heatDelta|createdAt>] [--source-enrich]`);
   printInfo(`  ${cmd("atypica pulse categories")} [--locale <en-US>]`);
   printInfo(`  ${cmd("atypica pulse get")} <id>`);
   printInfo("");
   printInfo(section("Subcommands:"));
-  printInfo(`  ${cmd("list")}        List pulse items with date/summary/source and pagination footer`);
+  printInfo(`  ${cmd("list")}        List pulse items with date/summary and pagination footer`);
   printInfo(`  ${cmd("categories")}  List available pulse categories`);
   printInfo(`  ${cmd("get")}         Show full detail for one pulse, including history and source URLs`);
   printInfo("");
@@ -98,7 +98,7 @@ export function printPulseHelp(): void {
   printInfo("  --limit <n>                                 Page size (1-50)");
   printInfo("  --page <n>                                  Page number (>=1)");
   printInfo(`  ${value("--order-by")} <heatScore|heatDelta|createdAt>  Sort field (desc, default heatScore; use heatDelta for sudden spikes)`);
-  printInfo("  --no-source-enrich                          Skip extra detail fetch for source link column");
+  printInfo("  --source-enrich                             Add source link column with extra detail fetches");
   printInfo("");
   printInfo(section("What This Feature Gives You:"));
   printInfo(`  - ${tip("Sort by total heat with")} ${value("heatScore")} ${tip("or by breakout velocity with")} ${value("heatDelta")}`);
@@ -125,8 +125,8 @@ export function printPulseHelp(): void {
   printInfo(`  ${tip("# 5) Fetch one pulse with heat history in JSON")}`);
   printInfo(`  ${cmd("atypica pulse get 3396 --json")}`);
   printInfo("");
-  printInfo(`  ${tip("# 6) Faster list (skip source enrichment)")}`);
-  printInfo(`  ${cmd("atypica pulse list --limit 20 --no-source-enrich")}`);
+  printInfo(`  ${tip("# 6) Include source links in list output")}`);
+  printInfo(`  ${cmd("atypica pulse list --limit 20 --source-enrich")}`);
   printInfo("");
   printInfo(`  ${tip("# 7) List categories")}`);
   printInfo(`  ${cmd("atypica pulse categories --locale en-US")}`);
@@ -135,7 +135,7 @@ export function printPulseHelp(): void {
   printInfo(`  - ${tip(`Use ${value("--json")} for machine-readable output`)}`);
   printInfo(`  - ${tip(`Use ${value("--order-by heatDelta")} when you want breakout topics ranked by velocity, not absolute heat`)}`);
   printInfo(`  - ${tip(`Use ${cmd("atypica pulse get <id> --json")} when you need the raw ${value("history")} series`)}`);
-  printInfo(`  - ${tip(`Use ${value("--no-source-enrich")} to skip detail lookups and speed up list rendering`)}`);
+  printInfo(`  - ${tip(`Use ${cmd("atypica pulse get <id>")} or ${value("--source-enrich")} when you need source URLs`)}`);
   printInfo(`  - ${tip(`Set ${value("ATYPICA_API_KEY")} and ${value("ATYPICA_BASE_URL")} explicitly in CI or agent runtimes`)}`);
 }
 
@@ -172,7 +172,7 @@ export async function runPulseCommand(args: string[], context: CliContext): Prom
     params.set("orderBy", orderBy);
 
     const response = await client.getPulseList(params);
-    const shouldEnrichSource = !context.json && !booleanFlag(flags, "no-source-enrich");
+    const shouldEnrichSource = !context.json && booleanFlag(flags, "source-enrich");
     const sourceUrlsById = shouldEnrichSource ? await enrichPulseSources(client, response.data) : undefined;
     renderPulseList(response, { json: context.json, sourceUrlsById });
     return;

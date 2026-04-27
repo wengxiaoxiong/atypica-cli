@@ -77,6 +77,36 @@ function formatSourceValue(itemId: number, sourceUrlsById?: Map<number, string |
   return source;
 }
 
+function listTableHeaders(options: RenderPulseListOptions): string[] {
+  const headers = ["ID", "Category", "Locale", "Date", "Heat", "Delta"];
+  if (options.sourceUrlsById) headers.push("Source");
+  headers.push("Title", "Summary");
+  return headers;
+}
+
+function listTableRow(item: PulseListItem, options: RenderPulseListOptions): string[] {
+  const delta = formatDelta(item.heatDelta);
+  const row = [
+    String(item.id),
+    highlightCategory(item.category),
+    item.locale,
+    highlightDate(formatDate(item.createdAt)),
+    highlightHeat(formatHeat(item.heatScore)),
+    highlightDelta(delta.text, delta.positive),
+  ];
+
+  if (options.sourceUrlsById) {
+    row.push(highlightLink(formatSourceValue(item.id, options.sourceUrlsById)));
+  }
+
+  row.push(
+    highlightTitle(truncateText(item.title, 52)),
+    truncateText(item.content.replace(/\s+/g, " ").trim(), SUMMARY_LIMIT),
+  );
+
+  return row;
+}
+
 function sortHistoryByDate(history: NonNullable<PulseDetail["history"]>): NonNullable<PulseDetail["history"]> {
   return [...history].sort((left, right) => new Date(left.date).getTime() - new Date(right.date).getTime());
 }
@@ -101,21 +131,8 @@ export function renderPulseList(response: PulseListResponse, options: RenderPuls
   }
 
   printTable(
-    ["ID", "Category", "Locale", "Date", "Heat", "Delta", "Source", "Title", "Summary"],
-    items.map((item) => {
-      const delta = formatDelta(item.heatDelta);
-      return [
-        String(item.id),
-        highlightCategory(item.category),
-        item.locale,
-        highlightDate(formatDate(item.createdAt)),
-        highlightHeat(formatHeat(item.heatScore)),
-        highlightDelta(delta.text, delta.positive),
-        highlightLink(formatSourceValue(item.id, options.sourceUrlsById)),
-        highlightTitle(truncateText(item.title, 52)),
-        truncateText(item.content.replace(/\s+/g, " ").trim(), SUMMARY_LIMIT),
-      ];
-    }),
+    listTableHeaders(options),
+    items.map((item) => listTableRow(item, options)),
   );
 
   const totalPages = Math.max(1, Math.ceil(response.pagination.total / response.pagination.pageSize));
