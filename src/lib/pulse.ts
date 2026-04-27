@@ -74,7 +74,7 @@ function formatSourceValue(itemId: number, sourceUrlsById?: Map<number, string |
   if (!sourceUrlsById) return "-";
   const source = sourceUrlsById.get(itemId) ?? null;
   if (!source) return "-";
-  return source.length > 42 ? `${source.slice(0, 39)}…` : source;
+  return source;
 }
 
 function sortHistoryByDate(history: NonNullable<PulseDetail["history"]>): NonNullable<PulseDetail["history"]> {

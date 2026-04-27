@@ -67,6 +67,37 @@ test("renderPulseList JSON mode keeps pagination shape", () => {
   assert.equal(parsed.data[0]?.id, 1);
 });
 
+test("renderPulseList plain mode prints full source URL", () => {
+  const longSourceUrl = "https://x.com/syokichiya/status/2047600123456789012";
+  const response: PulseListResponse = {
+    success: true,
+    data: [
+      {
+        id: 6298,
+        title: "Microsoft $10B Japan AI investment",
+        content: "Microsoft's announced investment in Japanese AI data centers.",
+        category: "AI Business",
+        locale: "en-US",
+        heatScore: 570.88,
+        heatDelta: 0.84,
+        createdAt: "2026-04-25T00:00:00.000Z",
+      },
+    ],
+    pagination: {
+      page: 1,
+      pageSize: 10,
+      total: 1,
+    },
+  };
+
+  const output = captureStdout(() => {
+    renderPulseList(response, { json: false, sourceUrlsById: new Map([[6298, longSourceUrl]]) });
+  });
+
+  assert.match(output, new RegExp(longSourceUrl));
+  assert.doesNotMatch(output, /https:\/\/x\.com\/syokichiya\/status\/2047600…/);
+});
+
 test("renderPulseDetail JSON mode preserves history payload", () => {
   const detail: PulseDetail = {
     id: 3396,
